@@ -17,4 +17,7 @@ interface TodoDao {
 
     @Query("DELETE FROM TODO WHERE id = :id")
     fun deleteTodo(id: Int)
+
+    @Query("UPDATE TODO SET title = :title WHERE id = :id")
+    fun updateTodo(id: Int, title: String)
 }
