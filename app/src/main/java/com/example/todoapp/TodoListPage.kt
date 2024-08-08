@@ -2,6 +2,7 @@ package com.example.todoapp
 
 import android.os.Build
 import android.widget.Space
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -42,6 +44,7 @@ import java.util.Locale
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TodoListPage(viewModel: TodoViewModel){
+    val context = LocalContext.current
     val todoList by viewModel.todoList.observeAsState(emptyList())
     var inputText by remember{
         mutableStateOf("")
@@ -71,6 +74,9 @@ fun TodoListPage(viewModel: TodoViewModel){
                 if(inputText!="") {
                     viewModel.addTodo(inputText)
                     inputText = ""
+                }
+                else {
+                    Toast.makeText(context, "Enter a task Baka", Toast.LENGTH_SHORT).show()
                 }
             },
                 modifier = Modifier.weight(1f)) {
