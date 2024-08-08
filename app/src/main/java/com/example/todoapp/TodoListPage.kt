@@ -68,8 +68,10 @@ fun TodoListPage(viewModel: TodoViewModel){
                     .weight(3f)
                     .padding(end = 8.dp))
             Button(onClick = {
-                viewModel.addTodo(inputText)
-                inputText=""
+                if(inputText!="") {
+                    viewModel.addTodo(inputText)
+                    inputText = ""
+                }
             },
                 modifier = Modifier.weight(1f)) {
                 Text(modifier = Modifier.fillMaxWidth(), text = "ADD",
