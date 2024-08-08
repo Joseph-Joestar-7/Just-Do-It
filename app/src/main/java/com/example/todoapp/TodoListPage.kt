@@ -120,7 +120,8 @@ fun TodoListPage(viewModel: TodoViewModel){
                                 item = item,
                                 onDelete = {
                                     viewModel.deleteTodo(item.id)
-                                }
+                                },
+                                onEdit = { newTitle -> viewModel.updateTodo(item.id, newTitle) }
                             )
                         }
                     }
@@ -129,7 +130,7 @@ fun TodoListPage(viewModel: TodoViewModel){
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
-                    text = "Empty like your DMs",
+                    text = "Empty just like your DMs",
                     fontSize = 50.sp,
                     style = MaterialTheme.typography.displaySmall
                 )
@@ -140,7 +141,10 @@ fun TodoListPage(viewModel: TodoViewModel){
 
 @Composable
 fun TodoItem(item: Todo,
-             onDelete:()->Unit){
+             onDelete:()->Unit,
+             onEdit: (String) -> Unit){
+    var isEditing by remember { mutableStateOf(false) }
+    var editText by remember { mutableStateOf(item.title) }
     Row(
         modifier= Modifier
             .fillMaxWidth()
@@ -150,21 +154,49 @@ fun TodoItem(item: Todo,
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ){
-        Column(
-            modifier = Modifier.weight(1f)
-        ){
-            Text(text= SimpleDateFormat("HH:mm:aa, dd/MM(MMMM)", Locale.ENGLISH).format(item.createdAt),
-                fontSize = 12.sp,
-                color= Color.DarkGray
+        if(isEditing){
+            OutlinedTextField(
+                value = editText,
+                onValueChange = { editText = it },
+                modifier = Modifier.weight(1f),
+                singleLine = true
+            )
+            IconButton(onClick = {
+                onEdit(editText)
+                isEditing = false
+            }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.check_circle_svgrepo_com),
+                    contentDescription = "Save",
+                    tint = Color.Black
                 )
-            Text(text=item.title, fontSize = 16.sp,color =Color.Blue,
-                style = MaterialTheme.typography.displayMedium)
+            }
+        }
+        else{
+            Column(
+                modifier = Modifier.weight(1f)
+            ){
+                Text(text= SimpleDateFormat("HH:mm:aa, dd/MM(MMMM)", Locale.ENGLISH).format(item.createdAt),
+                    fontSize = 12.sp,
+                    color= Color.DarkGray
+                )
+                Text(text=item.title, fontSize = 16.sp,color =Color.Blue,
+                    style = MaterialTheme.typography.displayMedium)
+            }
+        }
+
+        IconButton(onClick = { isEditing = true }) {
+            Icon(
+                painter = painterResource(id = R.drawable.pencil_svgrepo_com),
+                contentDescription = "Edit",
+                tint = Color.White
+            )
         }
         IconButton(onClick = onDelete) {
             Icon(painter = painterResource(id = R.drawable.baseline_backspace_24),
                 contentDescription ="Delete",
                 tint=Color.White)
         }
-    }
 
+    }
 }
