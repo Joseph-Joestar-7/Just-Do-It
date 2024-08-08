@@ -36,4 +36,3 @@ open class TodoViewModel: ViewModel() {
         }
     }
     }
-}
