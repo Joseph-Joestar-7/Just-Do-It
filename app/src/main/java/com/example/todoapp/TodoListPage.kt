@@ -49,39 +49,47 @@ fun TodoListPage(viewModel: TodoViewModel){
     var inputText by remember{
         mutableStateOf("")
     }
+    var isInputVisible by remember { mutableStateOf(false) } // State to track visibility
     Column(modifier= Modifier
         .fillMaxHeight()
         .padding(top = 100.dp, start = 8.dp, end = 8.dp, bottom = 8.dp)
     )
     {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-                ,
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ){
-            OutlinedTextField(value = inputText, onValueChange ={
-                inputText=it
-            },
-                placeholder = {
-                    Text(text = "What needs to be done?")
-                },
+        if(isInputVisible) {
+            Row(
                 modifier = Modifier
-                    .weight(3f)
-                    .padding(end = 8.dp))
-            Button(onClick = {
-                if(inputText!="") {
-                    viewModel.addTodo(inputText)
-                    inputText = ""
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                OutlinedTextField(
+                    value = inputText, onValueChange = {
+                        inputText = it
+                    },
+                    placeholder = {
+                        Text(text = "What needs to be done?")
+                    },
+                    modifier = Modifier
+                        .weight(3f)
+                        .padding(end = 8.dp)
+                )
+                Button(
+                    onClick = {
+                        if (inputText != "") {
+                            viewModel.addTodo(inputText)
+                            inputText = ""
+                            isInputVisible=false
+                        } else {
+                            Toast.makeText(context, "Enter a task Baka", Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(), text = "ADD",
+                        style = MaterialTheme.typography.displayLarge
+                    )
                 }
-                else {
-                    Toast.makeText(context, "Enter a task Baka", Toast.LENGTH_SHORT).show()
-                }
-            },
-                modifier = Modifier.weight(1f)) {
-                Text(modifier = Modifier.fillMaxWidth(), text = "ADD",
-                        style = MaterialTheme.typography.displayLarge)
             }
         }
         if (todoList.isNotEmpty()) {
@@ -106,6 +114,19 @@ fun TodoListPage(viewModel: TodoViewModel){
                 style = MaterialTheme.typography.displaySmall
             )
         }
+        androidx.compose.material3.FloatingActionButton(
+            onClick = { isInputVisible = !isInputVisible },
+            modifier = Modifier
+                .align(Alignment.End)
+                .padding(16.dp),
+            content = {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_add_circle_outline_24),
+                    contentDescription = "Add Task",
+                    tint = Color.White
+                )
+            }
+        )
     }
 }
 
