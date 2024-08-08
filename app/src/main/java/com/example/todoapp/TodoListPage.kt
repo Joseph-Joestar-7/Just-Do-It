@@ -17,10 +17,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -50,83 +53,88 @@ fun TodoListPage(viewModel: TodoViewModel){
         mutableStateOf("")
     }
     var isInputVisible by remember { mutableStateOf(false) } // State to track visibility
-    Column(modifier= Modifier
-        .fillMaxHeight()
-        .padding(top = 100.dp, start = 8.dp, end = 8.dp, bottom = 8.dp)
-    )
-    {
-        if(isInputVisible) {
-            Row(
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { isInputVisible = !isInputVisible },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                OutlinedTextField(
-                    value = inputText, onValueChange = {
-                        inputText = it
-                    },
-                    placeholder = {
-                        Text(text = "What needs to be done?")
-                    },
-                    modifier = Modifier
-                        .weight(3f)
-                        .padding(end = 8.dp)
-                )
-                Button(
-                    onClick = {
-                        if (inputText != "") {
-                            viewModel.addTodo(inputText)
-                            inputText = ""
-                            isInputVisible=false
-                        } else {
-                            Toast.makeText(context, "Enter a task Baka", Toast.LENGTH_SHORT).show()
-                        }
-                    },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(), text = "ADD",
-                        style = MaterialTheme.typography.displayLarge
+                    .padding(16.dp),
+                content = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_add_circle_outline_24),
+                        contentDescription = "Add Task",
+                        tint = Color.White
                     )
                 }
-            }
-        }
-        if (todoList.isNotEmpty()) {
-            LazyColumn(
-                content = {
-                    itemsIndexed(todoList) { index: Int, item: Todo ->
-                        TodoItem(
-                            item = item,
-                            onDelete = {
-                                viewModel.deleteTodo(item.id)
+            )
+        },
+        floatingActionButtonPosition = FabPosition.End
+    ){it->
+        Column(modifier= Modifier
+            .fillMaxHeight()
+            .padding(top = 100.dp, start = 8.dp, end = 8.dp, bottom = 8.dp)
+        )
+        {
+            if(isInputVisible) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    OutlinedTextField(
+                        value = inputText, onValueChange = {
+                            inputText = it
+                        },
+                        placeholder = {
+                            Text(text = "What needs to be done?")
+                        },
+                        modifier = Modifier
+                            .weight(3f)
+                            .padding(end = 8.dp)
+                    )
+                    Button(
+                        onClick = {
+                            if (inputText != "") {
+                                viewModel.addTodo(inputText)
+                                inputText = ""
+                                isInputVisible=false
+                            } else {
+                                Toast.makeText(context, "Enter a task Baka", Toast.LENGTH_SHORT).show()
                             }
+                        },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(), text = "ADD",
+                            style = MaterialTheme.typography.displayLarge
                         )
                     }
                 }
-            )
-        }else {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                text = "Empty like your DMs",
-                fontSize = 50.sp,
-                style = MaterialTheme.typography.displaySmall
-            )
-        }
-        androidx.compose.material3.FloatingActionButton(
-            onClick = { isInputVisible = !isInputVisible },
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(16.dp),
-            content = {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_add_circle_outline_24),
-                    contentDescription = "Add Task",
-                    tint = Color.White
+            }
+            if (todoList.isNotEmpty()) {
+                LazyColumn(
+                    content = {
+                        itemsIndexed(todoList) { index: Int, item: Todo ->
+                            TodoItem(
+                                item = item,
+                                onDelete = {
+                                    viewModel.deleteTodo(item.id)
+                                }
+                            )
+                        }
+                    }
+                )
+            }else {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    text = "Empty like your DMs",
+                    fontSize = 50.sp,
+                    style = MaterialTheme.typography.displaySmall
                 )
             }
-        )
+        }
     }
 }
 
