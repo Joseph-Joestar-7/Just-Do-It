@@ -29,4 +29,11 @@ open class TodoViewModel: ViewModel() {
 
         todoDao.deleteTodo(id)}
     }
+
+    fun updateTodo(id:Int,title: String){
+        viewModelScope.launch(Dispatchers.IO){
+           todoDao.updateTodo(id,title)
+        }
+    }
+    }
 }
